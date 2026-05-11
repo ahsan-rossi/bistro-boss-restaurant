@@ -1,0 +1,104 @@
+import React, { useEffect, useState } from "react";
+import authBg from "../../assets/others/authentication.png";
+import authLogin from "../../assets/others/authentication2.png";
+import {
+  loadCaptchaEnginge,
+  LoadCanvasTemplate,
+  validateCaptcha,
+} from "react-simple-captcha";
+import { FaFacebook } from "react-icons/fa6";
+import { FaGithub } from "react-icons/fa6";
+import { ImGoogle3 } from "react-icons/im";
+
+const Login = () => {
+  useEffect(() => {
+    loadCaptchaEnginge(6);
+  }, []);
+
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+
+  const handleCaptchaValidation = () => {
+    const user_captcha_value =
+      document.getElementById("user_captcha_input").value;
+    //console.log(user_captcha_value);
+    if (user_captcha_value.length < 6) {
+      setButtonDisabled(true);
+      return;
+    }
+    validateCaptcha(user_captcha_value)
+      ? setButtonDisabled(false)
+      : setButtonDisabled(true);
+  };
+
+  const handleLogin = (event) => {
+    event.preventDefault();
+    
+    // Perform login logic here
+  };
+
+  return (
+    <div
+      className="h-screen w-screen md:w-full flex justify-center items-center"
+      style={{ backgroundImage: `url(${authBg})` }}
+    >
+      <div className="p-20  md:border-2 rounded-[5px] border-gray-300 md:shadow-2xl flex justify-center items-center gap-30">
+        <div className="hidden md:block">
+          <img className="w-100 h-70" src={authLogin} alt="" />
+        </div>
+        <div>
+          <form onSubmit={handleLogin}>
+            <div className="flex flex-col gap-4 w-100 px-10">
+              <label className="text-3xl font-bold text-center">Login</label>
+              <label className="text-lg">Email</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="Type Here"
+                className=" bg-white w-full p-3 "
+              />
+              <label className="text-lg">Password</label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Enter your password"
+                className=" bg-white w-full p-3"
+              />
+
+              <LoadCanvasTemplate />
+
+              <input
+                type="text"
+                id="user_captcha_input"
+                placeholder="Type the characters you see"
+                className=" bg-white w-full p-3"
+                onKeyUp={handleCaptchaValidation}
+              />
+
+              <button
+                className="bg-[#D1A054] border-0 text-white font-bold  p-3 rounded-[5px]
+               disabled:bg-gray-400"
+                disabled={buttonDisabled}
+              >
+                Login
+              </button>
+
+              <label className="text-lg text-[#D1A054] text-center">
+                New here? Create a New Account
+              </label>
+
+              <label className="text-lg text-center">Or sign in with</label>
+
+              <div className="flex justify-center gap-6">
+                <FaFacebook className="text-2xl cursor-pointer" />
+                <FaGithub className="text-2xl cursor-pointer" />
+                <ImGoogle3 className="text-2xl cursor-pointer" />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Login;

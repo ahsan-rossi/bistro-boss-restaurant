@@ -28,6 +28,12 @@ const NavBar = () => {
         <Link to={`/shop/${defaultShopCategory}`}>Shop</Link>
         {/* <Link to="/shop">Shop</Link> */}
       </li>
+      <li>
+        <Link to="/login">Login</Link>
+      </li>
+      <li>
+        <Link to="/registration">Registration</Link>
+      </li>
     </>
   );
 
