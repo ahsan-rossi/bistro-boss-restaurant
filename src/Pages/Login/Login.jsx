@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import authBg from "../../assets/others/authentication.png";
 import authLogin from "../../assets/others/authentication2.png";
 import {
@@ -9,6 +9,8 @@ import {
 import { FaFacebook } from "react-icons/fa6";
 import { FaGithub } from "react-icons/fa6";
 import { ImGoogle3 } from "react-icons/im";
+import { AuthContext } from "../../Provider/AuthProvider";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   useEffect(() => {
@@ -16,6 +18,9 @@ const Login = () => {
   }, []);
 
   const [buttonDisabled, setButtonDisabled] = useState(true);
+  const { setUser, loading, signInWithGoogle, userLogin } = useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   const handleCaptchaValidation = () => {
     const user_captcha_value =
@@ -32,9 +37,34 @@ const Login = () => {
 
   const handleLogin = (event) => {
     event.preventDefault();
+    const formData = new FormData(event.target);
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    userLogin(email, password)
+      .then((result) => {
+        const loggedUser = result.user;
+        console.log(loggedUser);
+        setUser(loggedUser);
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Error logging in user:", error);
+      });
     
-    // Perform login logic here
   };
+
+  const handleLoginWithGoogle = () => {
+    signInWithGoogle()
+    .then(
+      result => {
+        const loggedUser = result.user;
+        console.log(loggedUser);
+        setUser(loggedUser);
+        navigate("/");
+      }
+    )
+  }
 
   return (
     <div
@@ -75,23 +105,25 @@ const Login = () => {
               />
 
               <button
-                className="bg-[#D1A054] border-0 text-white font-bold  p-3 rounded-[5px]
+                className="bg-[#D1A054] border-0 text-white font-bold  cursor-pointer p-3 rounded-[5px]
                disabled:bg-gray-400"
                 disabled={buttonDisabled}
               >
                 Login
               </button>
 
-              <label className="text-lg text-[#D1A054] text-center">
+              <Link to="/registration" className="text-lg text-[#D1A054] text-center">
                 New here? Create a New Account
-              </label>
+              </Link>
 
               <label className="text-lg text-center">Or sign in with</label>
 
               <div className="flex justify-center gap-6">
                 <FaFacebook className="text-2xl cursor-pointer" />
                 <FaGithub className="text-2xl cursor-pointer" />
-                <ImGoogle3 className="text-2xl cursor-pointer" />
+                <ImGoogle3 className="text-2xl cursor-pointer"
+                  onClick = {handleLoginWithGoogle}  
+                />
               </div>
             </div>
           </form>

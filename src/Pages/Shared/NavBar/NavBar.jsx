@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../../Provider/AuthProvider";
 
 const NavBar = () => {
+  const { user, signOutUser } = useContext(AuthContext);
   const defaultShopCategory = "pizza";
+
+  const handleSignOut = () => {
+    signOutUser()
+      .then(() => {
+        console.log("User signed out successfully");
+      })
+      .catch((error) => {
+        console.error("Error signing out user:", error);
+      });
+  };
+
   const menuItems = (
     <>
       <li>
@@ -27,12 +40,6 @@ const NavBar = () => {
       <li>
         <Link to={`/shop/${defaultShopCategory}`}>Shop</Link>
         {/* <Link to="/shop">Shop</Link> */}
-      </li>
-      <li>
-        <Link to="/login">Login</Link>
-      </li>
-      <li>
-        <Link to="/registration">Registration</Link>
       </li>
     </>
   );
@@ -109,7 +116,24 @@ const NavBar = () => {
         </ul>
       </div>
       <div className="navbar-end">
-        <a className="btn">Button</a>
+        {user ? (
+          <>
+            {user.email}{" "}
+            <button onClick={handleSignOut} className="btn mx-5">
+              Logout
+            </button>
+          </>
+        ) : (
+          <>
+            {" "}
+            <Link to="/login" className="btn mr-5">
+              Login
+            </Link>
+            <Link to="/registration" className="btn">
+              Sign Up
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );
