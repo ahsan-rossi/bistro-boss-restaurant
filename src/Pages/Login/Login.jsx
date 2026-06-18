@@ -9,8 +9,8 @@ import {
 import { FaFacebook } from "react-icons/fa6";
 import { FaGithub } from "react-icons/fa6";
 import { ImGoogle3 } from "react-icons/im";
-import { AuthContext } from "../../Provider/AuthProvider";
-import { Link, useNavigate } from "react-router-dom";
+import {AuthContext} from "../../contexts/AuthContext";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Login = () => {
   useEffect(() => {
@@ -18,9 +18,13 @@ const Login = () => {
   }, []);
 
   const [buttonDisabled, setButtonDisabled] = useState(true);
+  //eslint-disable-next-line no-unused-vars
   const { setUser, loading, signInWithGoogle, userLogin } = useContext(AuthContext);
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
 
   const handleCaptchaValidation = () => {
     const user_captcha_value =
@@ -46,7 +50,7 @@ const Login = () => {
         const loggedUser = result.user;
         console.log(loggedUser);
         setUser(loggedUser);
-        navigate("/");
+        navigate(from, { replace: true });
       })
       .catch((error) => {
         console.error("Error logging in user:", error);
@@ -61,7 +65,7 @@ const Login = () => {
         const loggedUser = result.user;
         console.log(loggedUser);
         setUser(loggedUser);
-        navigate("/");
+        navigate(from, { replace: true });
       }
     )
   }

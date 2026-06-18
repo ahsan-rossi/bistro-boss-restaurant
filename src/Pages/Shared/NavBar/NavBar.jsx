@@ -1,9 +1,12 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../../Provider/AuthProvider";
+import { AuthContext } from "../../../contexts/AuthContext";
+import { FaCartShopping } from "react-icons/fa6";
+import useCart from "../../../hooks/useCart";
 
 const NavBar = () => {
   const { user, signOutUser } = useContext(AuthContext);
+  const [cart] = useCart();
   const defaultShopCategory = "pizza";
 
   const handleSignOut = () => {
@@ -41,9 +44,22 @@ const NavBar = () => {
         <Link to={`/shop/${defaultShopCategory}`}>Shop</Link>
         {/* <Link to="/shop">Shop</Link> */}
       </li>
+      {
+        user && (
+           <li>
+        <Link to="/dashboard/mycart">
+          <button className="btn bg-transparent border-0 text-white p-0 mt-[-10px]">
+            <FaCartShopping /> <div className="badge badge-sm badge-warning shadow-none border-0">{cart?.length || 0}</div>
+          </button>
+        </Link>
+        {/* <Link to="/shop">Shop</Link> */}
+      </li>
+        )
+      }
+     
     </>
   );
-
+ 
   return (
     <div className="navbar fixed max-w-7xl z-10 bg-black/30 text-white shadow-sm">
       <div className="navbar-start">

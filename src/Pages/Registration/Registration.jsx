@@ -5,7 +5,7 @@ import authLogin from "../../assets/others/authentication2.png";
 import { FaFacebook } from "react-icons/fa6";
 import { FaGithub } from "react-icons/fa6";
 import { ImGoogle3 } from "react-icons/im";
-import { AuthContext } from "../../Provider/AuthProvider";
+import { AuthContext } from "../../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
 const Registration = () => {
