@@ -13,5 +13,6 @@
 
 .swiper-pagination-bullet-active {
   color: #fff;
-  background: #D99904;
+  /* background: #D99904; */
+  background: linear-gradient(to right, #835D23, #B58130);
 }

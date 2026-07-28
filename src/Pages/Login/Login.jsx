@@ -11,6 +11,7 @@ import { FaGithub } from "react-icons/fa6";
 import { ImGoogle3 } from "react-icons/im";
 import {AuthContext} from "../../contexts/AuthContext";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const Login = () => {
   useEffect(() => {
@@ -23,6 +24,8 @@ const Login = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const axiosSecure = useAxiosSecure();
 
   const from = location.state?.from?.pathname || "/";
 
@@ -64,10 +67,28 @@ const Login = () => {
       result => {
         const loggedUser = result.user;
         console.log(loggedUser);
+        if (loggedUser) {
+          const userData = {
+            name: loggedUser.displayName,
+            email: loggedUser.email,
+            photoURL: loggedUser.photoURL,
+          };
+          axiosSecure.post("/users", userData).then((response) => {
+            if (response.data.insertedId) {
+              console.log("User data saved to the database:", response.data);
+            } else {
+              console.log(response.data.message);
+            }
+          }).catch((error) => {
+            console.error("Error saving user data to the database:", error);
+          });
+        } 
         setUser(loggedUser);
         navigate(from, { replace: true });
       }
-    )
+    ).catch(error => {
+      console.error("Error logging in with Google:", error);
+    });
   }
 
   return (

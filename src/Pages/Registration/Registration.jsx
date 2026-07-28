@@ -7,12 +7,15 @@ import { FaGithub } from "react-icons/fa6";
 import { ImGoogle3 } from "react-icons/im";
 import { AuthContext } from "../../contexts/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const Registration = () => {
   // const [buttonDisabled, setButtonDisabled] = useState(true);
   const { setUser, loading, signInWithGoogle, createUser } = useContext(AuthContext);
 
   const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
 
   //   const handleCaptchaValidation = () => {
   //     const user_captcha_value =
@@ -33,7 +36,7 @@ const Registration = () => {
     const formData = new FormData(event.target);
     const email = formData.get("email");
     const password = formData.get("password");
-    const name = formData.get("name");
+    //const name = formData.get("name");
 
     createUser(email, password)
       .then((result) => {
@@ -51,9 +54,35 @@ const Registration = () => {
     signInWithGoogle().then((result) => {
       const loggedUser = result.user;
       console.log(loggedUser);
+      if (loggedUser) {
+        const userData = {
+          name: loggedUser.displayName,
+          email: loggedUser.email,
+          photoURL: loggedUser.photoURL,
+        };
+        axiosSecure.post("/users", userData).then((response) => {
+          if (response.data.insertedId) {
+            console.log("User data saved to the database:", response.data);
+          }else{
+            console.log(response.data.message);
+          }
+        }).catch((error) => {
+          console.error("Error saving user data to the database:", error);
+        });
+      }
       setUser(loggedUser);
       navigate("/");
-    });
+    }).catch((error) => {
+        Swal.fire({
+          title: "Google Sign-In Failed",
+          text: error.message,
+          icon: "error",
+          draggable: true,
+        });
+      });
+    
+    
+    ;
   };
 
   return (

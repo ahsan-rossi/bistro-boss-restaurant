@@ -79,7 +79,7 @@ const MenuItemCard = ({ item }) => {
           {item.recipe} 
         </p>
         <div className="card-actions justify-center">
-          <button className="btn btn-outline bg-base-300 border-0 border-b-3 border-[#D99904] text-[#D99904] uppercase p-6 mt-4 hover:bg-black/70" onClick={handleAddToCart}>
+          <button className="btn bg-gradient-to-r from-[#835D23] to-[#B58130] text-white  border-0 border-b-4 border-black uppercase p-6 mt-4" onClick={handleAddToCart}>
             ADD TO CART
           </button>
         </div>

@@ -61,7 +61,7 @@ const NavBar = () => {
   );
  
   return (
-    <div className="navbar fixed max-w-7xl z-10 bg-black/30 text-white shadow-sm">
+    <div className="navbar fixed min-w-screen z-10 bg-black/30 text-white shadow-sm">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -105,7 +105,7 @@ const NavBar = () => {
             {menuItems}
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl">Bistro Boss</a>
+        <a className="btn btn-ghost text-lg sm:text-xl px-2 sm:px-4">Bistro Boss</a>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
@@ -133,22 +133,21 @@ const NavBar = () => {
       </div>
       <div className="navbar-end">
         {user ? (
-          <>
-            {user.email}{" "}
-            <button onClick={handleSignOut} className="btn mx-5">
+          <div className="flex items-center min-w-0">
+            <span className="hidden md:inline font-semibold mr-3 truncate max-w-[150px] lg:max-w-none text-sm">{user.email}</span>
+            <button onClick={handleSignOut} className="btn btn-sm sm:btn-md btn-warning font-bold ml-2 md:mx-5 shrink-0">
               Logout
             </button>
-          </>
+          </div>
         ) : (
-          <>
-            {" "}
-            <Link to="/login" className="btn mr-5">
+          <div className="flex items-center gap-1.5 sm:gap-3">
+            <Link to="/login" className="btn btn-sm sm:btn-md btn-outline border-white text-white hover:bg-white hover:text-black">
               Login
             </Link>
-            <Link to="/registration" className="btn">
+            <Link to="/registration" className="btn btn-sm sm:btn-md bg-[#D1A054] text-white border-0 hover:bg-[#b0803d]">
               Sign Up
             </Link>
-          </>
+          </div>
         )}
       </div>
     </div>

@@ -47,7 +47,7 @@ const MenuSection = ({
       )}
 
       <div className="card-actions justify-center">
-        <button className="btn btn-outline bg-base-200 border-0 border-b-3 border-black text-black uppercase p-6 mt-4 hover:bg-black/20">
+        <button className="btn bg-gradient-to-r from-[#835D23] to-[#B58130] text-white border-0 border-b-4 border-black uppercase p-6 mt-4">
           <Link to={`/shop/${shopCategory}`}>ORDER YOUR FAVOURITE FOOD</Link>
         </button>
       </div>
