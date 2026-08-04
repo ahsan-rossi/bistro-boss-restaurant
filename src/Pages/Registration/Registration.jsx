@@ -12,7 +12,8 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const Registration = () => {
   // const [buttonDisabled, setButtonDisabled] = useState(true);
-  const { setUser, loading, signInWithGoogle, createUser } = useContext(AuthContext);
+  const { setUser, loading, signInWithGoogle, createUser, updateUserProfile } =
+    useContext(AuthContext);
 
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
@@ -36,43 +37,87 @@ const Registration = () => {
     const formData = new FormData(event.target);
     const email = formData.get("email");
     const password = formData.get("password");
-    //const name = formData.get("name");
+    const name = formData.get("name");
+    const photoURL = formData.get("photoURL");
 
     createUser(email, password)
       .then((result) => {
         const newUser = result.user;
         console.log(newUser);
-        setUser(newUser);
-        navigate("/");
+        if (newUser) {
+          const userData = {
+            name: newUser.displayName || name,
+            email: newUser.email,
+            photoURL: newUser.photoURL || photoURL,
+          };
+          updateUserProfile({ displayName: name, photoURL: photoURL })
+            .then(() => {
+              console.log("User profile updated successfully");
+              axiosSecure
+                .post("/users", userData)
+                .then((response) => {
+                  if (response.data.insertedId) {
+                    console.log(
+                      "User data saved to the database:",
+                      response.data,
+                    );
+                  } else {
+                    console.log(response.data.message);
+                  }
+                  setUser(newUser);
+                  navigate("/");
+                })
+                .catch((error) => {
+                  console.error(
+                    "Error saving user data to the database:",
+                    error,
+                  );
+                });
+            })
+            .catch((error) => {
+              console.error("Error updating user profile:", error);
+            });
+        }
       })
       .catch((error) => {
         console.error("Error creating user:", error);
+        Swal.fire({
+          title: "Registration Failed",
+          text: error.message,
+          icon: "error",
+          draggable: true,
+        });
       });
   };
 
   const handleLoginWithGoogle = () => {
-    signInWithGoogle().then((result) => {
-      const loggedUser = result.user;
-      console.log(loggedUser);
-      if (loggedUser) {
-        const userData = {
-          name: loggedUser.displayName,
-          email: loggedUser.email,
-          photoURL: loggedUser.photoURL,
-        };
-        axiosSecure.post("/users", userData).then((response) => {
-          if (response.data.insertedId) {
-            console.log("User data saved to the database:", response.data);
-          }else{
-            console.log(response.data.message);
-          }
-        }).catch((error) => {
-          console.error("Error saving user data to the database:", error);
-        });
-      }
-      setUser(loggedUser);
-      navigate("/");
-    }).catch((error) => {
+    signInWithGoogle()
+      .then((result) => {
+        const loggedUser = result.user;
+        console.log(loggedUser);
+        if (loggedUser) {
+          const userData = {
+            name: loggedUser.displayName,
+            email: loggedUser.email,
+            photoURL: loggedUser.photoURL,
+          };
+          axiosSecure
+            .post("/users", userData)
+            .then((response) => {
+              if (response.data.insertedId) {
+                console.log("User data saved to the database:", response.data);
+              } else {
+                console.log(response.data.message);
+              }
+            })
+            .catch((error) => {
+              console.error("Error saving user data to the database:", error);
+            });
+        }
+        setUser(loggedUser);
+        navigate("/");
+      })
+      .catch((error) => {
         Swal.fire({
           title: "Google Sign-In Failed",
           text: error.message,
@@ -80,9 +125,6 @@ const Registration = () => {
           draggable: true,
         });
       });
-    
-    
-    ;
   };
 
   return (
@@ -102,6 +144,14 @@ const Registration = () => {
                 placeholder="Type Here"
                 className=" bg-white w-full p-3 "
               />
+
+             <label className="text-lg">Photo URL</label>
+              <input
+                type="text"
+                name="photoURL"
+                placeholder="Provide Photo URL"
+                className=" bg-white w-full p-3 "
+              /> 
 
               <label className="text-lg">Email</label>
               <input

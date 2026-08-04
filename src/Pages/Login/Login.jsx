@@ -52,6 +52,25 @@ const Login = () => {
       .then((result) => {
         const loggedUser = result.user;
         console.log(loggedUser);
+        if (loggedUser) {
+          const userData = {
+            name: loggedUser.displayName,
+            email: loggedUser.email,
+            //photoURL: loggedUser.photoURL,
+          };
+          axiosSecure
+            .post("/users", userData)
+            .then((response) => {
+              if (response.data.insertedId) {
+                console.log("User data saved to the database:", response.data);
+              } else {
+                console.log(response.data.message);
+              }
+            })
+            .catch((error) => {
+              console.error("Error saving user data to the database:", error);
+            });
+        }
         setUser(loggedUser);
         navigate(from, { replace: true });
       })
